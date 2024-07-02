@@ -1,8 +1,8 @@
 import express from "express";
+import getAllUsers from "../controller/userController";
 
 const Router = express.Router();
 
-Router.post("/create-task", () => {});
-Router.put("/update-task", () => {});
+Router.get("/", getAllUsers);
 
 export default Router;
