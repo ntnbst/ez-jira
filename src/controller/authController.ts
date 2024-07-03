@@ -21,17 +21,7 @@ const registerUser = async (req: Request, res: Response) => {
         id: user.id,
       },
     };
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET || "",
-      { expiresIn: 36000 },
-      (err: any, token: any) => {
-        if (err) {
-          throw err;
-        }
-        res.json({ token });
-      },
-    );
+    signJwt(payload, res, user);
   } catch (error: any) {
     console.error("error occured", error.message);
     res.status(400).json({ message: error.message });
@@ -53,21 +43,23 @@ const loginUser = async (req: Request, res: Response) => {
     }
 
     const payload = { user: { id: user.id } };
-
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET || "",
-      { expiresIn: 360000 },
-      (err: any, token: any) => {
-        if (err) throw err;
-        res.json({ token });
-      },
-    );
+    signJwt(payload, res, user);
   } catch (error) {
     console.error("error", error);
     res.status(500).send("Server error");
   }
-  res.send("login user endpoint");
 };
+
+function signJwt(payload: any, res: Response, user: any) {
+  jwt.sign(
+    payload,
+    process.env.JWT_SECRET || "",
+    { expiresIn: "1h" },
+    (err: any, token: any) => {
+      if (err) throw err;
+      res.json({ user, token });
+    },
+  );
+}
 
 export { registerUser, loginUser };
